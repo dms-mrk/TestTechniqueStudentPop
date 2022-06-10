@@ -15,20 +15,20 @@ class EnsureValid {
 class ProposalUser {
     private int $userId;
     private ?string $proposalMessage;
-    private ?int $score;
+    private int $score;
     private ?string $type;
     private ?DateTime $sendAt;
 
     public function __construct(
         int $userId,
+        int $score,
         ?string $type,
-        ?int $score,
         ?string $proposalMessage,
     ) {
         $this->userId = $userId;
         $this->proposalMessage = $proposalMessage;
         $this->type = $type;
-        $this->score = $score !== null ? $this->setScore($score) : null;
+        $this->setScore($score);
         $this->sendAt = null;
     }
 
@@ -38,6 +38,11 @@ class ProposalUser {
     ): void {
 
         $this->sendAt = $sendAt;
+    }
+
+    public function readScore(): int
+    {
+        return $this->score;
     }
 
     private function setScore(int $score): self
@@ -114,3 +119,5 @@ function scheduleProposalsBy(array $proposals, DateTime $deadline, int $proposal
 
     return $proposals;
 }
+
+
