@@ -4,7 +4,7 @@ class EnsureValid {
     public static function ensureScore(int $score): int
     {
         if ($score < 0 || $score > 100) {
-            throw new ErrorException('Score has an invalid format');
+            throw new ErrorException('Score should be between 1 and 100');
         }
 
         return $score;
