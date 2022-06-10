@@ -16,59 +16,35 @@ class ProposalUser {
     private int $userId;
     private ?string $proposalMessage;
     private ?int $score;
-    private string $type;
+    private ?string $type;
     private ?DateTime $sendAt;
 
     public function __construct(
         int $userId,
-        string $type,
+        ?string $type,
         ?int $score,
         ?string $proposalMessage,
     ) {
         $this->userId = $userId;
         $this->proposalMessage = $proposalMessage;
         $this->type = $type;
-        $this->score = $score ?? null;
+        $this->score = $score !== null ? $this->setScore($score) : null;
         $this->sendAt = null;
     }
 
-    public function setSendAt(?DateTime $dateTime): self
-    {
-        $this->sendAt = $dateTime;
+    public function editSendAt
+    (
+        DateTime $sendAt,
+    ): void {
 
-        return $this;
+        $this->sendAt = $sendAt;
     }
 
-    public function getSendAt(): ?DateTime
-    {
-        return $this->sendAt;
-    }
-
-    public function getProposalMessage(): ?string
-    {
-        return $this->proposalMessage;
-    }
-
-    public function getUserId(): int
-    {
-        return $this->userId;
-    }
-
-    public function setScore(int $score): self
+    private function setScore(int $score): self
     {
         $this->score = EnsureValid::ensureScore($score);
 
         return $this;
-    }
-
-    public function getScore(): int
-    {
-        return $this->score;
-    }
-
-    public function getType(string $type): string
-    {
-        return $this->type;
     }
 }
 
@@ -118,7 +94,9 @@ function scheduleProposalsBy(array $proposals, DateTime $deadline, int $proposal
     $counterWave = 1;
 
     for ($i = 1; $i <= $proposalsNumber; $i++) {
-        $proposals[$i-1]->setSendAt(new DateTime(date('Y-m-d H:i:s', $now)));
+        $proposals[$i-1]->editSendAt(
+            new DateTime(date('Y-m-d H:i:s', $now)),
+        );
 
         if ($counter === $proposalsByWave) {
             $counter = 1;
